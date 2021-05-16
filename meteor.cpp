@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "meteor.h"
 
 Meteor::Meteor(int x_range, double speed, const Font& font) {

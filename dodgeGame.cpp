@@ -1,12 +1,8 @@
-﻿// HelloSFML.cpp : 此文件包含 "main" 函数。程序执行将在此处开始并结束。
-//
-
-#include "pch.h"
-#include <SFML/Graphics.hpp>
+﻿#include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <deque>
 #include <iostream>
-#include "Meteor.h"
+#include "meteor.h"
 
 using namespace std;
 using namespace sf;
@@ -15,12 +11,21 @@ enum State {
 	Play, Over
 };
 
-int main()
+int main(int argc, char** argv)
 {
 	Vector2f resolution;
-	resolution.x = VideoMode::getDesktopMode().width;
-	resolution.y = VideoMode::getDesktopMode().height;
-	RenderWindow window(VideoMode(resolution.x, resolution.y), "DodgeGame", Style::Fullscreen);
+	uint32_t style;
+	if (argc == 3) {
+		resolution.x = atof(argv[1]);
+		resolution.y = atof(argv[2]);
+		style = Style::Resize;
+	} else {
+		resolution.x = VideoMode::getDesktopMode().width;
+		resolution.y = VideoMode::getDesktopMode().height;
+		style = Style::Fullscreen;
+	}
+	RenderWindow window(VideoMode(resolution.x, resolution.y), "DodgeGame", style);
+
 	window.setFramerateLimit(60);
 	View mainView(FloatRect(0, 0, resolution.x, resolution.y));
 
@@ -97,7 +102,8 @@ int main()
 			}
 
 			lastGenerate += t;
-			if (lastGenerate >= 20) {
+			// addjust difficulty based on window size
+			if (lastGenerate >= 40000 / resolution.x) {
 				// generates a new meteor
 				Meteor newMeteor(resolution.x, meteorSpeed, font);
 				meteors.push_back(newMeteor);
@@ -127,14 +133,3 @@ int main()
 		window.display();
 	}
 }
-
-// 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
-// 调试程序: F5 或调试 >“开始调试”菜单
-
-// 入门提示: 
-//   1. 使用解决方案资源管理器窗口添加/管理文件
-//   2. 使用团队资源管理器窗口连接到源代码管理
-//   3. 使用输出窗口查看生成输出和其他消息
-//   4. 使用错误列表窗口查看错误
-//   5. 转到“项目”>“添加新项”以创建新的代码文件，或转到“项目”>“添加现有项”以将现有代码文件添加到项目
-//   6. 将来，若要再次打开此项目，请转到“文件”>“打开”>“项目”并选择 .sln 文件
